@@ -1,0 +1,91 @@
+Model2.txt
+
+	JSP -> java(Servlet) -> class
+
+
+ Model2방식의 개발
+ => MVC 패턴을 사용하여 개발
+ 
+ 
+ 	M : Model   => 데이터베이스와 연동, 처리 로직 부분(java)
+ 				POJO(Plain Old Java Object) : 그냥 자바 파일
+ 	V : View    => 화면 구현(jsp)
+ 	C : Controller => model과 view 연결 동작(servlet)
+ 	
+ 	=> 관심사의 분리 / 업무를 분리 (잘 처리한다)
+ 	
+ 	=> 패턴을 사용하는 이유 : 역할에 맞는 동작을 수행하기 위함
+ 	
+ 	
+ 	MVC 
+ 	
+ 	사용자       ->     Controller       ->    Model  <-> MySQL
+ 	                       |
+ 	                      View
+ 	                      
+ 	MVC (FrontController)
+ 	
+ 	사용자   ->   FrontController(Servlet)    ->   (DB 사용 시)  Controller(java) -> Model(DAO) <-> MySQL
+ 	                    |
+ 	        (DB 사용 X) View(view) 
+ 	        
+ 	
+ 	* 커넥션풀 (Connection Pool)
+ 	  디비 연결정보(Connection)를 매번 생성하는 것이 아니라,
+ 	  pool에 저장 후 사용, 사용이 끝나면 반납해서 재사용
+ 	  => 호출마다 연결정보를 생성, 해제를 막기 위해서
+ 	  
+ 	  1) service() 메서드당 1개의 pool을 생성한다(벡터 형태)
+ 	  2) 커넥션의 개수를 제한한다.
+ 	  3) 커넥션 객체를 다 사용 후 자원을 회수
+ 	  
+ 	  클라이언트 요청 -> 할당할 커넥션이 있는지 체크(pool) -> 커넥션이 있을 때 -> 커넥션 객체 사용 (sql 실행)
+ 	  -> 커넥션을 반환
+ 	  
+ 	  클라이언트 요청 -> 할당할 커넥션이 있는지 체크(pool) -> 커넥션이 없을 때
+ 	  // 나는 pool에 5개만 저장해서 쓸 건데 6번째 요청이 들어올 수도 있다
+ 	  -> 커넥션 객체를 대기시킴 (반환할 때까지),
+ 	     대기시간을 넘었을 경우 임시 커넥션을 생성
+ 	     
+ 	  * 라이브러리 설치
+ 	  commons-collection4-4.4.jar
+ 	  => 자카르타 DBCP API 처리
+ 	  commons-dbcp2-2.9.0.jar
+ 	  => DBCP API 처리
+ 	  commons-pool2-2.11.1.jar
+ 	  => Pool API 처리
+ 	  
+ 	  Context.xml
+ 	 <Context> : 프로젝트
+	     <Resource  // 정보
+		name="jdbc/model2"   정보의 이름
+		auth="Container"     자원관리자 (Container/Application)        //container 서버의 생성부터 소멸까지 관리
+		                                -> tomcat
+		type="javax.sql.DataSource" 리소스를 실제로 사용하는 타입
+		driverClassName="com.mysql.jdbc.Driver" 드라이버명
+		username="root" 디비 계정
+		password="1234" 디비 비밀번호
+		url="jdbc:mysql://localhost:3306/jspdb" 디비 주소
+		maxWait="5000" 최대 대기시간(5초)
+	
+	/>
+</Context>
+ 	     
+ 	     
+ 	     
+ 	     
+ 	     
+ 	     
+ 	     
+ 	     
+ 	     
+ 	     
+ 	     
+ 	     
+ 	     
+ 	     
+ 	  
+ 	  
+ 	  
+ 	  
+  
